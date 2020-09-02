@@ -5,9 +5,12 @@
 .PHONY: clean all
 all: conf mconf
 clean:
-	rm -f *.o lxdialog/*.o *.moc $(clean-files) conf mconf qconf
+	rm -f *.o lxdialog/*.o *.moc $(clean-files) conf mconf qconf nconf
 
-clean-files	:=
+# This clean-files definition is here to ensure that temporary files from the
+# previous version are removed by make config-clean.
+# It should be removed or emptied when this Makefile get updated again.
+clean-files	:= zconf.tab.c zconf.lex.c zconf.hash.c .tmp_qtcheck
 
 # ===========================================================================
 # Variables needed by the upstream Makefile
@@ -48,6 +51,16 @@ HOSTCFLAGS_parser.tab.o	:= -I $(srctree)/$(src)
 # conf: Used for defconfig, oldconfig and related targets
 hostprogs-y	+= conf
 conf-objs	:= conf.o $(common-objs)
+
+# nconf: Used for the nconfig target based on ncurses
+hostprogs-y	+= nconf
+nconf-objs	:= nconf.o nconf.gui.o $(common-objs)
+
+HOSTLDLIBS_nconf	= $(shell . $(obj)/nconf-cfg && echo $$libs)
+HOSTCFLAGS_nconf.o	= $(shell . $(obj)/nconf-cfg && echo $$cflags)
+HOSTCFLAGS_nconf.gui.o	= $(shell . $(obj)/nconf-cfg && echo $$cflags)
+
+$(obj)/nconf.o $(obj)/nconf.gui.o: $(obj)/nconf-cfg
 
 # mconf: Used for the menuconfig target based on lxdialog
 hostprogs-y	+= mconf
@@ -119,6 +132,9 @@ conf: $(conf-objs)
 # '/bin/sh: ./mconf-cfg: No such file or directory'
 mconf: mconf-cfg $(mconf-objs)
 	$(CC) -o $@ $(filter-out mconf-cfg,$^) $(HOSTLDLIBS_mconf)
+
+nconf: nconf-cfg $(nconf-objs)
+	$(CC) -o $@ $(filter-out nconf-cfg,$^) $(HOSTLDLIBS_nconf)
 
 qconf: qconf-cfg $(qconf-cxxobjs) $(qconf-objs)
 	$(CXX) -o $@ $(filter-out qconf-cfg,$^) $(HOSTLDLIBS_qconf)

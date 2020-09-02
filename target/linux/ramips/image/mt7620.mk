@@ -52,7 +52,7 @@ define Device/alfa-network_tube-e4g
   DEVICE_VENDOR := ALFA Network
   DEVICE_MODEL := Tube-E4G
   DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci uboot-envtools uqmi -iwinfo \
-	-kmod-rt2800-soc -wpad-basic
+	-kmod-rt2800-soc -wpad-basic-wolfssl
 endef
 TARGET_DEVICES += alfa-network_tube-e4g
 
@@ -85,6 +85,16 @@ define Device/asus_rt-ac51u
   SUPPORTED_DEVICES += rt-ac51u
 endef
 TARGET_DEVICES += asus_rt-ac51u
+
+define Device/asus_rt-ac54u
+  SOC := mt7620a
+  IMAGE_SIZE := 16064k
+  DEVICE_VENDOR := Asus
+  DEVICE_MODEL := RT-AC54U
+  DEVICE_PACKAGES := kmod-mt76x2 kmod-usb2 kmod-usb-ohci \
+	kmod-usb-ledtrig-usbport
+endef
+TARGET_DEVICES += asus_rt-ac54u
 
 define Device/asus_rt-n12p
   SOC := mt7620n
@@ -362,8 +372,7 @@ define Device/elecom_wrh-300cr
   SOC := mt7620n
   IMAGE_SIZE := 14272k
   IMAGES += factory.bin
-  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size | \
-	elecom-header
+  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size | elecom-header
   DEVICE_VENDOR := Elecom
   DEVICE_MODEL := WRH-300CR
   DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci
@@ -391,8 +400,8 @@ define Device/fon_fon2601
   DEVICE_VENDOR := Fon
   DEVICE_MODEL := FON2601
   DEVICE_PACKAGES := kmod-mt76x2 kmod-usb2 kmod-usb-ohci
-  KERNEL_INITRAMFS := $$(KERNEL) | fonfxcimage
-  IMAGE/sysupgrade.bin := append-kernel | append-rootfs | fonfxcimage | \
+  KERNEL_INITRAMFS := $$(KERNEL) | uimage-padhdr
+  IMAGE/sysupgrade.bin := append-kernel | append-rootfs | uimage-padhdr | \
 	pad-rootfs | append-metadata | check-size
 endef
 TARGET_DEVICES += fon_fon2601
@@ -503,6 +512,17 @@ define Device/iodata_wn-ac733gr3
 endef
 TARGET_DEVICES += iodata_wn-ac733gr3
 
+define Device/iptime_a1004ns
+  SOC := mt7620a
+  IMAGE_SIZE := 16192k
+  UIMAGE_NAME := a1004ns
+  DEVICE_VENDOR := ipTIME
+  DEVICE_MODEL := A1004ns
+  DEVICE_PACKAGES := kmod-mt76x0e kmod-usb2 kmod-usb-ohci \
+	kmod-usb-ledtrig-usbport
+endef
+TARGET_DEVICES += iptime_a1004ns
+
 define Device/iptime_a104ns
   SOC := mt7620a
   IMAGE_SIZE := 8000k
@@ -569,6 +589,15 @@ define Device/lava_lr-25g001
 endef
 TARGET_DEVICES += lava_lr-25g001
 
+define Device/lb-link_bl-w1200
+  SOC := mt7620a
+  DEVICE_VENDOR := LB-Link
+  DEVICE_MODEL := BL-W1200
+  IMAGE_SIZE := 7872k
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-mt76x2
+endef
+TARGET_DEVICES += lb-link_bl-w1200
+
 define Device/lenovo_newifi-y1
   SOC := mt7620a
   IMAGE_SIZE := 16064k
@@ -593,8 +622,7 @@ define Device/linksys_e1700
   SOC := mt7620a
   IMAGE_SIZE := 7872k
   IMAGES += factory.bin
-  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size | \
-	umedia-header 0x013326
+  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size | umedia-header 0x013326
   DEVICE_VENDOR := Linksys
   DEVICE_MODEL := E1700
   SUPPORTED_DEVICES += e1700
@@ -620,8 +648,7 @@ define Device/netgear_ex2700
   IMAGES += factory.bin
   KERNEL := $(KERNEL_DTB) | uImage lzma | pad-offset 64k 64 | \
 	append-uImage-fakehdr filesystem
-  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size | \
-	netgear-dni
+  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size | netgear-dni
   DEVICE_VENDOR := NETGEAR
   DEVICE_MODEL := EX2700
   SUPPORTED_DEVICES += ex2700
@@ -635,8 +662,7 @@ define Device/netgear_ex3700
   BLOCKSIZE := 4k
   IMAGE_SIZE := 7744k
   IMAGES += factory.chk
-  IMAGE/factory.chk := $$(sysupgrade_bin) | check-size | \
-	netgear-chk
+  IMAGE/factory.chk := $$(sysupgrade_bin) | check-size | netgear-chk
   DEVICE_PACKAGES := kmod-mt76x2
   DEVICE_VENDOR := NETGEAR
   DEVICE_MODEL := EX3700/EX3800
@@ -644,19 +670,47 @@ define Device/netgear_ex3700
 endef
 TARGET_DEVICES += netgear_ex3700
 
+define Device/netgear_ex6120
+  SOC := mt7620a
+  NETGEAR_BOARD_ID := U12H319T30_NETGEAR
+  BLOCKSIZE := 4k
+  IMAGE_SIZE := 7744k
+  IMAGES += factory.chk
+  IMAGE/factory.chk := $$(sysupgrade_bin) | check-size | netgear-chk
+  DEVICE_PACKAGES := kmod-mt76x2
+  DEVICE_VENDOR := NETGEAR
+  DEVICE_MODEL := EX6120
+endef
+TARGET_DEVICES += netgear_ex6120
+
 define Device/netgear_ex6130
   SOC := mt7620a
   NETGEAR_BOARD_ID := U12H319T50_NETGEAR
   BLOCKSIZE := 4k
   IMAGE_SIZE := 7744k
   IMAGES += factory.chk
-  IMAGE/factory.chk := $$(sysupgrade_bin) | check-size | \
-	netgear-chk
+  IMAGE/factory.chk := $$(sysupgrade_bin) | check-size | netgear-chk
   DEVICE_PACKAGES := kmod-mt76x2
   DEVICE_VENDOR := NETGEAR
   DEVICE_MODEL := EX6130
 endef
 TARGET_DEVICES += netgear_ex6130
+
+define Device/netgear_jwnr2010-v5
+  $(Device/netgear_sercomm_nor)
+  SOC := mt7620n
+  BLOCKSIZE := 4k
+  IMAGE_SIZE := 3840k
+  DEVICE_MODEL := JWNR2010
+  DEVICE_VARIANT := v5
+  SERCOMM_HWNAME := N300
+  SERCOMM_HWID := ASW
+  SERCOMM_HWVER := A001
+  SERCOMM_SWVER := 0x0040
+  SERCOMM_PAD := 128k
+  DEFAULT := n
+endef
+TARGET_DEVICES += netgear_jwnr2010-v5
 
 define Device/netgear_wn3000rp-v3
   SOC := mt7620a
@@ -667,14 +721,24 @@ define Device/netgear_wn3000rp-v3
   IMAGES += factory.bin
   KERNEL := $(KERNEL_DTB) | uImage lzma | pad-offset 64k 64 | \
 	append-uImage-fakehdr filesystem
-  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size | \
-	netgear-dni
+  IMAGE/factory.bin := $$(sysupgrade_bin) | check-size | netgear-dni
   DEVICE_VENDOR := NETGEAR
   DEVICE_MODEL := WN3000RP
   DEVICE_VARIANT := v3
   SUPPORTED_DEVICES += wn3000rpv3
 endef
 TARGET_DEVICES += netgear_wn3000rp-v3
+
+define Device/netis_wf2770
+  SOC := mt7620a
+  IMAGE_SIZE := 16064k
+  UIMAGE_NAME := WF2770_0.0.00
+  DEVICE_VENDOR := NETIS
+  DEVICE_MODEL := WF2770
+  DEVICE_PACKAGES := kmod-mt76x0e
+  KERNEL_INITRAMFS := $(KERNEL_DTB) | netis-tail WF2770 | uImage lzma
+endef
+TARGET_DEVICES += netis_wf2770
 
 define Device/nexx_wt3020-4m
   SOC := mt7620n
@@ -687,6 +751,7 @@ define Device/nexx_wt3020-4m
   DEVICE_MODEL := WT3020
   DEVICE_VARIANT := 4M
   SUPPORTED_DEVICES += wt3020 wt3020-4M
+  DEFAULT := n
 endef
 TARGET_DEVICES += nexx_wt3020-4m
 
@@ -938,7 +1003,7 @@ define Device/tplink_archer-mr200
   TPLINK_HWID := 0xd7500001
   TPLINK_HWREV := 0x4a
   IMAGES := sysupgrade.bin
-  DEVICE_PACKAGES := kmod-mt76x0e kmod-usb2 kmod-usb-net kmod-usb-net-rndis \
+  DEVICE_PACKAGES := kmod-mt76x0e kmod-usb2 kmod-usb-net-rndis \
 	kmod-usb-serial kmod-usb-serial-option adb-enablemodem
   DEVICE_MODEL := Archer MR200
   SUPPORTED_DEVICES += mr200
@@ -969,12 +1034,22 @@ define Device/tplink_re210-v1
 endef
 TARGET_DEVICES += tplink_re210-v1
 
+define Device/trendnet_tew-810dr
+  SOC := mt7620a
+  DEVICE_PACKAGES := kmod-mt76x0e
+  DEVICE_VENDOR := TRENDnet
+  DEVICE_MODEL := TEW-810DR
+  IMAGE_SIZE := 6720k
+endef
+TARGET_DEVICES += trendnet_tew-810dr
+
 define Device/vonets_var11n-300
   SOC := mt7620n
   IMAGE_SIZE := 3776k
   BLOCKSIZE := 4k
   DEVICE_VENDOR := Vonets
   DEVICE_MODEL := VAR11N-300
+  DEFAULT := n
 endef
 TARGET_DEVICES += vonets_var11n-300
 
@@ -1139,8 +1214,8 @@ define Device/zyxel_keenetic-omni
   DEVICE_MODEL := Keenetic Omni
   DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-usb-ledtrig-usbport
   IMAGES += factory.bin
-  IMAGE/factory.bin := $$(sysupgrade_bin) | pad-to 64k | \
-	check-size | zyimage -d 4882 -v "ZyXEL Keenetic Omni"
+  IMAGE/factory.bin := $$(sysupgrade_bin) | pad-to 64k | check-size | \
+	zyimage -d 4882 -v "ZyXEL Keenetic Omni"
   SUPPORTED_DEVICES += kn_rc
 endef
 TARGET_DEVICES += zyxel_keenetic-omni
@@ -1152,8 +1227,7 @@ define Device/zyxel_keenetic-omni-ii
   DEVICE_MODEL := Keenetic Omni II
   DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-usb-ledtrig-usbport
   IMAGES += factory.bin
-  IMAGE/factory.bin := $$(sysupgrade_bin) | pad-to 64k | \
-	check-size | \
+  IMAGE/factory.bin := $$(sysupgrade_bin) | pad-to 64k | check-size | \
 	zyimage -d 2102034 -v "ZyXEL Keenetic Omni II"
   SUPPORTED_DEVICES += kn_rf
 endef
@@ -1167,8 +1241,8 @@ define Device/zyxel_keenetic-viva
   DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-usb-ledtrig-usbport \
 	kmod-switch-rtl8366-smi kmod-switch-rtl8367b
   IMAGES += factory.bin
-  IMAGE/factory.bin := $$(sysupgrade_bin) | pad-to 64k | \
-	check-size | zyimage -d 8997 -v "ZyXEL Keenetic Viva"
+  IMAGE/factory.bin := $$(sysupgrade_bin) | pad-to 64k | check-size | \
+	zyimage -d 8997 -v "ZyXEL Keenetic Viva"
   SUPPORTED_DEVICES += kng_rc
 endef
 TARGET_DEVICES += zyxel_keenetic-viva

@@ -36,6 +36,7 @@ enum input_mode {
 	olddefconfig,
 	yes2modconfig,
 	mod2yesconfig,
+	fatalrecursive,
 };
 static enum input_mode input_mode = oldaskconfig;
 
@@ -471,13 +472,14 @@ static struct option long_opts[] = {
 	{"olddefconfig",    no_argument,       NULL, olddefconfig},
 	{"yes2modconfig",   no_argument,       NULL, yes2modconfig},
 	{"mod2yesconfig",   no_argument,       NULL, mod2yesconfig},
+	{"fatalrecursive",  no_argument,       NULL, fatalrecursive},
 	{NULL, 0, NULL, 0}
 };
 
 static void conf_usage(const char *progname)
 {
 
-	printf("Usage: %s [-s] [option] <kconfig-file>\n", progname);
+	printf("Usage: %s [-s] [--fatalrecursive] [option] <kconfig-file>\n", progname);
 	printf("[option] is _one_ of the following:\n");
 	printf("  --listnewconfig         List new options\n");
 	printf("  --helpnewconfig         List new options and help text\n");
@@ -562,6 +564,9 @@ int main(int ac, char **av)
 		case yes2modconfig:
 		case mod2yesconfig:
 			break;
+		case fatalrecursive:
+			recursive_is_error = 1;
+			continue;
 		case 'r':
 			input_file = optarg;
 			continue;

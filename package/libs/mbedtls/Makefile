@@ -8,13 +8,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mbedtls
-PKG_VERSION:=2.16.5
+PKG_VERSION:=2.16.7
 PKG_RELEASE:=1
 PKG_USE_MIPS16:=0
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-gpl.tgz
-PKG_SOURCE_URL:=https://tls.mbed.org/download/
-PKG_HASH:=6ebdea6565c714f1315b9af6a802afb4b4e89976f7d5d2b15aa8028eb52e7d09
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://codeload.github.com/ARMmbed/mbedtls/tar.gz/v$(PKG_VERSION)?
+PKG_HASH:=c95b11557ee97d2bdfd48cd57cf9b648a6cddd2ca879e3c35c4e7525f2871992
 
 PKG_BUILD_PARALLEL:=1
 PKG_LICENSE:=GPL-2.0-or-later

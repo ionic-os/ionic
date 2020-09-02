@@ -48,6 +48,7 @@ void zconf_initscan(const char *name);
 void zconf_nextfile(const char *name);
 int zconf_lineno(void);
 const char *zconf_curname(void);
+extern int recursive_is_error;
 
 /* confdata.c */
 const char *conf_get_configname(void);

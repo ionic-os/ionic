@@ -32,6 +32,7 @@ struct symbol symbol_yes = {
 struct symbol *sym_defconfig_list;
 struct symbol *modules_sym;
 tristate modules_val;
+int recursive_is_error;
 
 enum symbol_type sym_get_type(struct symbol *sym)
 {
@@ -375,11 +376,10 @@ void sym_calc_value(struct symbol *sym)
 				}
 			}
 		calc_newval:
-			if (sym->dir_dep.tri < sym->rev_dep.tri) {
+			if (sym->dir_dep.tri == no && sym->rev_dep.tri != no)
 				newval.tri = no;
-			} else {
+			else
 				newval.tri = EXPR_OR(newval.tri, sym->rev_dep.tri);
-			}
 		}
 		if (newval.tri == mod &&
 		    (sym_get_type(sym) == S_BOOLEAN || sym->implied.tri == yes))
@@ -1250,10 +1250,8 @@ struct symbol *sym_check_deps(struct symbol *sym)
 		sym->flags &= ~SYMBOL_CHECK;
 	}
 
-#ifdef WARN_RECURSIVE_DEP
-	if (sym2 && sym2 == sym)
+	if (!recursive_is_error && sym2 && sym2 == sym)
 		sym2 = NULL;
-#endif
 
 	return sym2;
 }
